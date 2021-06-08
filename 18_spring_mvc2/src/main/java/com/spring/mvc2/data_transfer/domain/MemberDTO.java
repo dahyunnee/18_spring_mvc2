@@ -2,7 +2,6 @@ package com.spring.mvc2.data_transfer.domain;
 
 import org.springframework.stereotype.Component;
 
-
 /*
  *  @Component 
  *    
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Component("memberDTO")
 public class MemberDTO {
-	
+
 	private String id;
 	private String pw;
 	private String name;
@@ -36,6 +35,8 @@ public class MemberDTO {
 	private String smsstsYn;
 	private String email;
 	private String emailstsYn;
+	
+	
 	public String getId() {
 		return id;
 	}
@@ -121,6 +122,4 @@ public class MemberDTO {
 		this.emailstsYn = emailstsYn;
 	}
 	
-	
-
 }

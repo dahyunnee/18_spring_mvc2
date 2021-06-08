@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component("orderDTO")
 public class OrderDTO {
-	
+
 	private String memberId;
 	private String orderId;
 	private String productCode;
@@ -15,7 +15,6 @@ public class OrderDTO {
 	private int orderCount;
 	private int totalPrice;
 	private Date orderDate;
-	
 	
 	public String getMemberId() {
 		return memberId;
@@ -66,6 +65,4 @@ public class OrderDTO {
 		this.orderDate = orderDate;
 	}
 	
-	
-
 }
