@@ -1,7 +1,6 @@
 package com.spring.mvc2.data_transfer.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -18,11 +15,12 @@ import com.spring.mvc2.data_transfer.dao.MemberDAO;
 import com.spring.mvc2.data_transfer.domain.MemberDTO;
 
 @Controller
-@RequestMapping(value="vTOc")
+@RequestMapping("vTOc")
 public class ViewToController {
-	
+
 	@Autowired
 	private MemberDAO memberDAO;
+	
 	/*
 	 *	전송방식을 지정해 GET과 POST 방식을 다른 메서드로 처리할 수 있다.
 	 *	명시하지 않을 경우 GET과 POST방식을 모두 처리한다.
@@ -35,6 +33,16 @@ public class ViewToController {
 		return "member/joinForm";
 	}
 	
+	@RequestMapping("/list1") 
+	public String list1(Model model) {
+		
+		model.addAttribute("from", "list1");
+		model.addAttribute("memberList" , memberDAO.selectAllMember());
+		
+		return "member/memberList";
+	}
+	
+	
 	/* 
 	 * 	
 	 * 	예시 1)  HttpServletRequest
@@ -45,11 +53,12 @@ public class ViewToController {
 	 */
 	
 	@RequestMapping(value="/transfer1")
-	public String transfer1(HttpServletRequest request ) {
+	public String transfer1(HttpServletRequest request) {
 		
 		MemberDTO memberDTO = new MemberDTO();
+		
 		memberDTO.setId(request.getParameter("id"));
-		memberDTO.setPw(request.getParameter("password"));
+		memberDTO.setPw(request.getParameter("pw"));
 		memberDTO.setName(request.getParameter("name"));
 		memberDTO.setGender(request.getParameter("gender"));
 		memberDTO.setBirthY(request.getParameter("birthY"));
@@ -64,30 +73,21 @@ public class ViewToController {
 		memberDTO.setEmailstsYn(request.getParameter("emailstsYn"));
 		
 		memberDAO.joinMember(memberDTO);
-	
+		
 		return "redirect:/vTOc/list1";
+		
+		/*
+		 *
+		 * 	특정 페이지로 리다이렉트시키는 방법은 "redirect:경로" 와 같은 형태로 간단하다.
+		 *	jsp 페이지로 이동하는 방법과 url로 리다이렉트하는 방법의 차이점은 중요하므로 잘 기억하여야 한다.
+		 *	 
+		 *		jsp로 이동하는 경우 : 순수하게 페이지만 이동  
+		 *		redirect하는 경우   : 해당 url에 있는 모든 로직을 수행한후 페이지 이동.
+		 *
+		 */
+		
 	}
 	
-	/*
-	 *
-	 * 	특정 페이지로 리다이렉트시키는 방법은 "redirect:경로" 와 같은 형태로 간단하다.
-	 *	jsp 페이지로 이동하는 방법과 url로 리다이렉트하는 방법의 차이점은 중요하므로 잘 기억하여야 한다.
-	 *	 
-	 *		jsp로 이동하는 경우 : 순수하게 페이지만 이동  
-	 *		redirect하는 경우   : 해당 url(redirect: 후에 나오는 url)에 있는 모든 코드 수행한후 페이지 이동.
-	 *		
-	 *
-	 */
-	
-	@RequestMapping(value="/list1")
-	public String list1(Model model) {
-		List<MemberDTO> list = memberDAO.selectAllMember();
-		
-		model.addAttribute("from","list1");
-		model.addAttribute("memberList",list);
-		
-		return "member/memberList";
-	}
 	
 	
 	/*
@@ -105,10 +105,10 @@ public class ViewToController {
 	
 	@RequestMapping(value="/transfer2")
 	public String transfer2(MemberDTO memberDTO) {
-		
 		memberDAO.joinMember(memberDTO);
 		return "redirect:/vTOc/list1";
 	}
+	
 	
 	
 	/* 
@@ -117,41 +117,45 @@ public class ViewToController {
 	 * Map 인터페이스를 이용하여 요청파라미터에 접근이 가능하다.
 	 * 
 	 */
-	
 	@RequestMapping(value="/transfer3")
-	public String transfer3(@RequestParam Map<String, String> memberMAP) {
-		
-		memberDAO.joinMember(memberMAP);
+	public String transfer3(@RequestParam Map<String,String> memberMap) {
+		memberDAO.joinMember(memberMap);
 		return "redirect:/vTOc/list1";
 	}
 	
+	
+	
 	/* 
 	  
- 	예시 4) [ 특정 값만 입력받기 ] requestParam 이용
-
-	- 요청 파라미터의 개수가 얼마 되지 않는다면 @RequestParam어노테이션을 사용하여 파라메타의 값에 접근 할 수 있다. 
-	- @RequestParam 어노테이션의 속성
+	 	예시 4) [ 특정 값만 입력받기 ] requestParam 이용
 	
-		name 		 : 파라메타의 이름을 지정한다. 
-		required	 : 필수 여부를 지정한다. 기본값은 true이며 요청값이 없으면 익셉션이 발생한다.
-		defaultValue : 요청 파라미타의 값이 없을때 사용할 값을 지정한다.
+		- 요청 파라미터의 개수가 얼마 되지 않는다면 @RequestParam어노테이션을 사용하여 파라메타의 값에 접근 할 수 있다. 
+		- @RequestParam 어노테이션의 속성
+		
+			name 		 : 파라메타의 이름을 지정한다. 
+			required	 : 필수 여부를 지정한다. 기본값은 true이며 요청값이 없으면 익셉션이 발생한다.
+			defaultValue : 요청 파라미타의 값이 없을때 사용할 값을 지정한다.
 	
-	 */
+   */
 	
 	@RequestMapping(value="/transfer4")
-	public String transfer4(@RequestParam(name="id", defaultValue = "user") String id,
-							@RequestParam(name="pw", defaultValue = "1234") String pw,
-							@RequestParam(name="name", defaultValue = "anonymous") String name ) {
+	public String transfer4(@RequestParam(name="id" , defaultValue = "user") String id ,
+							@RequestParam(name="pw" , defaultValue = "1234") String pw ,
+							@RequestParam(name="name" , defaultValue = "anonymous") String name ) {
 		
 		Map<String, String> memberMap = new HashMap<String, String>();
+		
 		memberMap.put("id", id);
 		memberMap.put("pw", pw);
 		memberMap.put("name", name);
 		
 		memberDAO.joinMember(memberMap);
 		
+		
 		return "redirect:/vTOc/list1";
 	}
+	
+	
 	
 	/* 
 	 * 예시 5) [ 특정 값만 입력받기 ] parameter에 직접 name값만 입력
@@ -161,20 +165,23 @@ public class ViewToController {
 	 * 
 	 */
 	
-	
 	@RequestMapping(value="/transfer5")
-	public String transfer5(String id, String pw, String name) {
+	public String transfer5(String id , String pw , String name) {
 		
 		Map<String, String> memberMap = new HashMap<String, String>();
+		
 		memberMap.put("id", id);
 		memberMap.put("pw", pw);
 		memberMap.put("name", name);
 		
 		memberDAO.joinMember(memberMap);
 		
+		
 		return "redirect:/vTOc/list1";
 	}
 	
 	
-
+	
+	
+	
 }

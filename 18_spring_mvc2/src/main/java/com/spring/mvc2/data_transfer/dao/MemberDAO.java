@@ -15,20 +15,20 @@ public class MemberDAO {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	public void joinMember(MemberDTO memberDTO) {
-		
-		sqlSession.insert("member.insertMemberDTO",memberDTO);
-	}
-	
-	public void joinMember(Map<String, String> memberMAP) {
-		
-		sqlSession.insert("member.insertMemberMAP", memberMAP);
-	}
-
 	public List<MemberDTO> selectAllMember(){
-		
 		return sqlSession.selectList("member.selectAllMember");
 	}
-}
 	
-
+	
+	public void joinMember(MemberDTO memberDTO) {
+		sqlSession.insert("member.insertMemberDTO" , memberDTO);
+	}
+	
+	public void joinMember(Map<String,String> memberMap) {
+		sqlSession.insert("member.insertMemberMap" , memberMap);
+	}
+	
+	
+	
+	
+}

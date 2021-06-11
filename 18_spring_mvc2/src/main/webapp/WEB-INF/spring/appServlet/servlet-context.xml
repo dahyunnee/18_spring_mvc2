@@ -22,8 +22,6 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="com.spring.mvc2" />
-	<context:component-scan base-package="com.spring.mvc3" />
-	
 	
 	
 </beans:beans>
